@@ -10,6 +10,4 @@ group :development do
   gem "foreman"
   gem "pry"
   gem "rake"
-  gem "shotgun"
-  gem "thin"
 end
