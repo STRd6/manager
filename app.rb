@@ -22,6 +22,14 @@ get "/sh/:cmd" do
   `#{params[:cmd]}`
 end
 
+get "/id_rsa.pub" do
+  # Make sure ssh is installed
+  `apt-get install ssh -y`
+  `mkdir ~/.ssh`
+  `cd ~/.ssh && ssh-keygen -f id_rsa -C 'MGMT' -N '' -t rsa -q && cd ..`
+  `more ~/.ssh/id_rsa.pub`
+end
+
 post "/create" do
   result = Digitalocean::Droplet.create({
     :name => droplet_name,
