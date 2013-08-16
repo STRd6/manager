@@ -29,11 +29,16 @@ get "/sh/:cmd" do
   io
 end
 
+get "/ssh/:cmd" do
+  io = IO.popen("ssh -i ~/.ssh/id_rsa -o ConnectTimeout=1 -o BatchMode=yes -o StrictHostKeyChecking=no #{params[:cmd]} 2>&1")
+  io.sync = true
+
+  io
+end
+
 get "/id_rsa.pub" do
-  # Make sure ssh is installed
-  `apt-get install ssh -y`
-  `mkdir ~/.ssh`
-  `cd ~/.ssh && ssh-keygen -f id_rsa -C 'MGMT' -N '' -t rsa -q && cd ..`
+  `scripts/gen_pub`
+
   `more ~/.ssh/id_rsa.pub`
 end
 
