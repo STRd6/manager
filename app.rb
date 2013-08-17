@@ -47,7 +47,7 @@ get "/ssh/:cmd" do
 end
 
 get "/setenv/:app/:key/:value" do
-  env_file = "/home/git/#{params[:app]}"
+  env_file = "/home/git/#{params[:app]}/ENV"
 
   key = params[:key]
   value = params[:value]
