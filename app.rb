@@ -28,6 +28,10 @@ def host_exec(cmd)
   exec(cmd)
 end
 
+def env_file(app)
+  "/home/git/#{app}/ENV"
+end
+
 helpers do
   def logger
     request.logger
@@ -47,7 +51,7 @@ get "/ssh/:cmd" do
 end
 
 get "/setenv/:app/:key/:value" do
-  env_file = "/home/git/#{params[:app]}/ENV"
+  file = env_file(params[:app]})
 
   key = params[:key]
   value = params[:value]
@@ -56,7 +60,7 @@ get "/setenv/:app/:key/:value" do
 end
 
 get "/env/:app" do
-  env_file = "/home/git/#{params[:app]}"
+  file = env_file(params[:app])
 
   host_exec("cat #{env_file}")
 end
