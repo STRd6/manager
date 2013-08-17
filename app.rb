@@ -11,7 +11,7 @@ use Rack::Logger
 def exec(cmd)
   content_type :txt
 
-  cmd = "#{cmd} 2>&1"
+  cmd = "(#{cmd}) 2>&1"
 
   logger.info(cmd)
 
@@ -19,6 +19,13 @@ def exec(cmd)
   io.sync = true
 
   io
+end
+
+def host_exec(cmd)
+  hostname = ENV["HOSTNAME"] || "cloudpeninsula.com"
+  cmd = "ssh -i ~/.ssh/id_rsa -o ConnectTimeout=1 -o BatchMode=yes -o StrictHostKeyChecking=no #{hostname} #{cmd}"
+
+  exec(cmd)
 end
 
 helpers do
@@ -36,10 +43,22 @@ get "/sh/:cmd" do
 end
 
 get "/ssh/:cmd" do
-  hostname = ENV["HOSTNAME"] || "cloudpeninsula.com"
-  cmd = "ssh -i ~/.ssh/id_rsa -o ConnectTimeout=1 -o BatchMode=yes -o StrictHostKeyChecking=no #{hostname} #{params[:cmd]}"
+  host_exec(params[:cmd])
+end
 
-  exec(cmd)
+get "/setenv/:app/:key/:value" do
+  env_file = "/home/git/#{params[:app]}"
+
+  key = params[:key]
+  value = params[:value]
+
+  host_exec("echo 'export #{key}=#{value}' >> #{env_file}")
+end
+
+get "/env/:app" do
+  env_file = "/home/git/#{params[:app]}"
+
+  host_exec("cat #{env_file}")
 end
 
 get "/id_rsa.pub" do
