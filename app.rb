@@ -52,7 +52,7 @@ get "/setenv/:app/:key/:value" do
   key = params[:key]
   value = params[:value]
 
-  host_exec("echo 'export #{key}=#{value}' >> #{env_file}")
+  host_exec("\"echo 'export #{key}=#{value}' >> #{env_file}\"")
 end
 
 get "/env/:app" do
