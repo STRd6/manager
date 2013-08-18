@@ -90,7 +90,7 @@ get "/set_ssh_keys" do
 end
 
 get "/deploy/:app" do
-  HardWorker.perform_async(params[:app])
+  DeployWorker.perform_async(params[:app])
 end
 
 post "/create" do
