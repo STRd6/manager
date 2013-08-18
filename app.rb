@@ -56,7 +56,7 @@ get "/setenv/:app/:key/:value" do
   key = params[:key]
   value = params[:value]
 
-  host_exec("\"echo 'export #{key}=#{value}' >> #{env_file}\"")
+  host_exec("\"echo 'export #{key}=#{value}' >> #{file}\"")
 
   # TODO: remove duplicate keys
 end
@@ -64,7 +64,7 @@ end
 get "/env/:app" do
   file = env_file(params[:app])
 
-  host_exec("cat #{env_file}")
+  host_exec("cat #{file}")
 end
 
 get "/id_rsa.pub" do
