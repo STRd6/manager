@@ -1,6 +1,5 @@
 #!/bin/bash
 
-apt-get install ssh -y
 mkdir ~/.ssh
 chmod 700 ~/.ssh
 cd ~/.ssh && ssh-keygen -f ~/.ssh/id_rsa -C 'MGMT' -N '' -t rsa -q && cd ..
