@@ -2,6 +2,8 @@ class DeployWorker
   include Sidekiq::Worker
 
   def perform(app)
-    `APP="#{app}" scripts/deploy`
+    cmd = "APP=\"#{app}\" scripts/deploy 2>&1"
+    logger.info cmd
+    logger.info `#{cmd}`
   end
 end
