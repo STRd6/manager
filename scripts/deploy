@@ -2,7 +2,6 @@
 
 # Later these will be passed in
 ACCOUNT=STRd6
-DOMAIN="cloudpeninsula.com"
 
 # Attempt to create the dir and clone the repo
 # should be idempotent so we don't care about errors
@@ -14,7 +13,7 @@ cd git/$APP
 git pull
 
 # Add a remote origin. Also should be idempotent so we don't care about errors.
-git remote add cloud git@$DOMAIN:$APP
+git remote add cloud git@root:$APP
 # Push the current (hopefully default) branch
 git push cloud `git rev-parse --abbrev-ref HEAD`
 
