@@ -56,7 +56,7 @@ get "/setenv/:app/:key/:value" do
   key = params[:key]
   value = params[:value]
 
-  host_exec("\"echo 'export #{key}=#{value}' >> #{file}\"")
+  host_exec("\"echo 'export #{key}=\\\"#{value}\\\"' >> #{file}\"")
 
   # TODO: remove duplicate keys
 end
