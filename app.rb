@@ -28,8 +28,8 @@ def host_exec(cmd)
   exec(cmd)
 end
 
-def env_file(app)
-  "/home/git/#{app}/ENV"
+def env_file(app_name)
+  "/home/git/#{app_name}/ENV"
 end
 
 helpers do
