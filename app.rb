@@ -2,6 +2,7 @@ require "digitalocean"
 require "json"
 require "pry" if ENV["RACK_ENV"] == "development"
 require "sinatra"
+require "./workers"
 
 Digitalocean.client_id = ENV["CLIENT_ID"]
 Digitalocean.api_key = ENV["API_KEY"]
@@ -28,8 +29,17 @@ def host_exec(cmd)
   exec(cmd)
 end
 
-def env_file(app_name)
-  "/home/git/#{app_name}/ENV"
+# TODO: Switch this to POST because setting long env variable doesn't work
+def setenv(app, key, value)
+  file = env_file(app)
+
+  host_exec("\"echo 'export #{key}=\\\"#{value}\\\"' >> #{file}\"")
+
+  # TODO: remove duplicate keys
+end
+
+def env_file(app)
+  "/home/git/#{app}/ENV"
 end
 
 helpers do
@@ -51,14 +61,7 @@ get "/ssh/:cmd" do
 end
 
 get "/setenv/:app/:key/:value" do
-  file = env_file(params[:app])
-
-  key = params[:key]
-  value = params[:value]
-
-  host_exec("\"echo 'export #{key}=\\\"#{value}\\\"' >> #{file}\"")
-
-  # TODO: remove duplicate keys
+  setenv(params[:app], params[:key], params[:value])
 end
 
 get "/env/:app" do
@@ -70,9 +73,24 @@ end
 get "/id_rsa.pub" do
   content_type :txt
 
-  `scripts/gen_pub`
+  public_key = `cat ~/.ssh/id_rsa.pub`
 
-  `more ~/.ssh/id_rsa.pub`
+  if public_key == ""
+    `scripts/gen_pub`
+
+    public_key = `cat ~/.ssh/id_rsa.pub`
+  end
+
+  public_key
+end
+
+get "/set_ssh_keys" do
+  setenv("manager", "PUBLIC_KEY", ENV["PUBLIC_KEY"])
+  setenv("manager", "PRIVATE_KEY", ENV["PRIVATE_KEY"])
+end
+
+get "/deploy/:app" do
+  HardWorker.perform_async(params[:app])
 end
 
 post "/create" do

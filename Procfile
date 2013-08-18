@@ -1,1 +1,1 @@
-web: unicorn -p $PORT -c config/unicorn.conf
+web: unicorn -p $PORT -c config/unicorn.rb

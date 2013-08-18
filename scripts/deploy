@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Later these will be passed in
+ACCOUNT=STRd6
+DOMAIN="cloudpeninsula.com"
+
+# Attempt to create the dir and clone the repo
+# should be idempotent so we don't care about errors
+mkdir -p git/$APP
+git clone https://github.com/$ACCOUNT/$APP.git git/$APP
+
+# Go to the repo and pull the latest
+cd git/$APP
+git pull
+
+# Add a remote origin. Also should be idempotent so we don't care about errors.
+git remote add cloud git@$DOMAIN:$APP
+# Push the current (hopefully default) branch
+git push cloud `git rev-parse --abbrev-ref HEAD`
+
+# In the future we may want to clear the remote so we can change
+# the deploy target of the app if DOMAIN changes.
