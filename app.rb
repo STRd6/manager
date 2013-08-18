@@ -51,7 +51,7 @@ get "/ssh/:cmd" do
 end
 
 get "/setenv/:app/:key/:value" do
-  file = env_file(params[:app]})
+  file = env_file(params[:app])
 
   key = params[:key]
   value = params[:value]
